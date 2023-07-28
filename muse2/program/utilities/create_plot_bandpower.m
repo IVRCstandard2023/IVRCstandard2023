@@ -10,6 +10,7 @@ function plot_bandpower = create_plot_bandpower()
     xlabel('Time(s)');
     ylabel('Power(dB)');
     set(gca,'FontSize',12);
+    ylim(gca, [0 1000]); % c²‚Ì”ÍˆÍ‚ğ0‚©‚ç1000‚Éİ’è
     drawnow;
 
     plot_bandpower = [plot_alpha plot_left plot_right];

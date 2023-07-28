@@ -10,6 +10,7 @@ function update_plot_bandpower(plot_bandpower, timeStamp, power_alpha, power_lef
     addpoints(plot_left,  timeStamp, power_left)
     addpoints(plot_right, timeStamp, power_right)
     xlim([timeStamp-30 timeStamp+1]);
-    ylim([0 20])
+    %ylim([0 20])
+    ylim([0 1000])%1000�ɕύX
     drawnow;
 end
