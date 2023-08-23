@@ -39,7 +39,7 @@ public class LoadCellConverter : MonoBehaviour
     void ConvertDataToGrams(string data, UduinoDevice device)
     {
         // 受け取ったローデータをログに出力
-        Debug.Log("Received Raw Data: " + data);
+        //Debug.Log("Received Raw Data: " + data);
         if (long.TryParse(data, out long rawValue))
         {
             float weightInGrams = (rawValue * HX711_ADC1bit) / HX711_SCALE;
