@@ -11,6 +11,8 @@ void setup() {
     digitalWrite(pin_slk, LOW);
     
     uduino.addCommand("getWeight", sendHX711Value);
+    uduino.addCommand("d", WritePinDigital);  // digital write のコマンド
+    uduino.addCommand("a", WritePinAnalog);   // 追加: analog write のコマンド
 }
 
 void loop() {
@@ -43,5 +45,41 @@ long AE_HX711_Read(void)
   digitalWrite(pin_slk,0);
   delayMicroseconds(10);
   return data^0x800000; 
+}
+
+// digital write の関数
+void WritePinDigital() {
+    int pinToMap = -1;
+    char *arg = NULL;
+    arg = uduino.next();
+    if (arg != NULL)
+        pinToMap = atoi(arg);
+
+    int writeValue;
+    arg = uduino.next();
+    if (arg != NULL && pinToMap != -1)
+    {
+        writeValue = atoi(arg);
+        digitalWrite(pinToMap, writeValue);
+    }
+}
+
+// 追加: analog write の関数
+void WritePinAnalog() {
+    int pinToMap = 100;  // Default value
+    char *arg = NULL;
+    arg = uduino.next();
+    if (arg != NULL)
+    {
+        pinToMap = atoi(arg);
+    }
+
+    int valueToWrite;
+    arg = uduino.next();
+    if (arg != NULL)
+    {
+        valueToWrite = atoi(arg);
+        analogWrite(pinToMap, valueToWrite);
+    }
 }
 
