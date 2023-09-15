@@ -7,10 +7,10 @@ addpath(genpath('./liblsl-Matlab')); % LSL通信ライブラリをパスに追�
 % PetalStreamのNameを設定する
 streamName = 'PetalStream';
 
-% FFT解析パラメータ
+% FFT解析パラメー
 T               = 7;                % 時間窓長(s)
 intarval        = 0.3;                % FFT解析間隔(s)
-measurementTime = 10000;              % 脳波の計測時間
+measurementTime = 100000;              % 脳波の計測時間 10000→100000に変更
 
 % ゲーム制御パラメータ
 controlMode      = 2;              % controlModeが1の場合:ジャンプ操作、2の場合:横移動操作
@@ -35,6 +35,23 @@ udp_send         = udpport;         % UDPソケット
 % 脳波データ格納用変数
 lsl_eeg             = []; % raw EEGデータ
 lsl_time            = []; % タイムスタンプ
+
+% 計測データを保存するための変数
+data_to_save = [];
+
+% 保存するデータのフォルダを作成（既に存在する場合は何もしない）
+if ~exist('data_all', 'dir')
+    mkdir('data_all');
+end
+% ファイル名を設定
+current_time = datetime('now', 'Format', 'yyyyMMdd_HHmmss');
+csv_filename = sprintf('./data_all/%s.csv', current_time);
+
+% CSVファイルの最初の行にタイトルを書き込む
+titles = {'Timestamp', 'Alpha', 'Beta', 'Gamma', 'Delta', 'Theta'};
+fid = fopen(csv_filename, 'w');
+fprintf(fid, '%s,%s,%s,%s,%s,%s\n', titles{:});
+fclose(fid);
 
 
 % バンドパワープロットの設定
@@ -110,8 +127,11 @@ while true
         update_plot_bandpower_sonoyama(plot_bandpower, timeStamp, power_delta, power_theta, power_alpha, power_beta, power_gamma);
         
         % ==== データのcsvファイルへの書き込み ==== %
-        
-        
+        data_row = [timeStamp, power_alpha, power_beta, power_gamma, power_delta, power_theta];
+        dlmwrite(csv_filename, data_row, '-append', 'delimiter', ',');
+
+
+
         % ==== 操作データをゲームに送信 ==== %
         %alpha波のデータをゲーム実行PCに送信
         if isEnabled
